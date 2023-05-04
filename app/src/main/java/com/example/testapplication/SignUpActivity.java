@@ -1,6 +1,7 @@
 package com.example.testapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -22,6 +23,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.testapplication.viewmodel.LoginViewmodel;
+import com.example.testapplication.viewmodel.SignUpViewmodel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,20 +50,20 @@ public class SignUpActivity extends AppCompatActivity {
     ProgressDialog loading = null;
 
     ImageView iv_pass, iv_cnfmpass;
-    FirebaseFirestore db;
 
-    FirebaseAuth mAuth;
     boolean isPassVisible = false;
     boolean isCnfmPassVisible = false;
+
+    SignUpViewmodel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
 
         loading = Common.getDialog(this);
+
+        viewModel = ViewModelProviders.of(this).get(SignUpViewmodel.class);
 
         et_date = findViewById(R.id.et_date);
         tv_sign_in = findViewById(R.id.tv_sign_in);
@@ -77,6 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radioGroup);
         iv_pass = findViewById(R.id.iv_pass);
         iv_cnfmpass = findViewById(R.id.iv_cnfmpass);
+        listeners();
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -171,46 +175,38 @@ public class SignUpActivity extends AppCompatActivity {
             } else if (TextUtils.isEmpty(dob)) {
                 et_date.setError("Please enter Date of Birth");
             } else {
-                registerNewUser();
+                loading.show();
+                viewModel.Signup(FirebaseAuth.getInstance(), email, pass);
             }
         });
     }
-    private void addDataToFirestore() {
 
-        // creating a collection reference
-        // for our Firebase Firestore database.
-        CollectionReference dbCourses = db.collection("userDetails");
 
-        // adding our data to our courses object class.
-        User courses = new User(firstName, lastName, gender, email, mobileNumber, dob);
+    private void listeners() {
 
-        dbCourses.document(mAuth.getCurrentUser().getUid()).set(courses).addOnSuccessListener(documentReference -> {
-            Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            loading.hide();
-            Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
-        }).addOnFailureListener(e -> Toast.makeText(SignUpActivity.this, "Something went wrong.Failed to authenticate User." + e, Toast.LENGTH_SHORT).show());
+        viewModel.sucessLiveData.observe(this, aBoolean -> {
+            if (aBoolean == Boolean.TRUE) {
+                viewModel.addDataToFirestore(firstName,lastName,gender,email,mobileNumber,dob);
+
+            } else {
+                Toast.makeText(getApplicationContext(), "User already exists.", Toast.LENGTH_LONG).show();
+                loading.hide();
+            }
+        });
+
+        viewModel.dataAddedLiveData.observe(this, aBoolean -> {
+            if (aBoolean == Boolean.TRUE) {
+                Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                loading.hide();
+
+            } else {
+                Toast.makeText(getApplicationContext(), "User already exists.", Toast.LENGTH_LONG).show();
+                loading.hide();
+            }
+        });
     }
-
-    private void registerNewUser() {
-        loading.show();
-
-        mAuth.createUserWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        addDataToFirestore();
-//                            progressBar.setVisibility(View.GONE);
-
-                        //                            progressBar.setVisibility(View.GONE);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "User already exists.", Toast.LENGTH_LONG).show();
-                        loading.hide();
-//                            progressBar.setVisibility(View.GONE);
-                    }
-                });
-    }
-
 
     private void updateLabel() {
         String myFormat = "dd/MM/yyyy";

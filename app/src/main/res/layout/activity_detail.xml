@@ -28,7 +28,6 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vibhuti Gohel"
             android:textColor="@color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
@@ -54,7 +53,6 @@
             android:id="@+id/tv_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Female"
             android:textColor="@color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
@@ -80,7 +78,6 @@
             android:id="@+id/tv_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="gohelVibhuti6@gmail.com"
             android:textColor="@color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
@@ -106,7 +103,6 @@
             android:id="@+id/tv_mob_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="9033313024"
             android:textColor="@color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
@@ -132,7 +128,6 @@
             android:id="@+id/tv_dob"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12/04/1997"
             android:textColor="@color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />

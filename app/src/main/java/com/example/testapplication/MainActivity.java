@@ -1,6 +1,8 @@
 package com.example.testapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.testapplication.viewmodel.LoginViewmodel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,22 +34,23 @@ public class MainActivity extends AppCompatActivity {
 
     ProgressDialog loading;
 
-    private FirebaseAuth mAuth;
+    LoginViewmodel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
+        viewModel = ViewModelProviders.of(this).get(LoginViewmodel.class);
 
         tv_sign_in = findViewById(R.id.tv_sign_in);
         tv_sign_up = findViewById(R.id.tv_sign_up);
         et_email = findViewById(R.id.et_email);
         et_pass = findViewById(R.id.et_pass);
         iv_pass = findViewById(R.id.iv_pass);
-
         loading = Common.getDialog(this);
+
+        listeners();
 
         iv_pass.setOnClickListener(view -> {
             if (!isPassVisible) {
@@ -74,6 +78,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void listeners() {
+
+        viewModel.sucessLiveData.observe(this, aBoolean -> {
+            if(aBoolean == Boolean.TRUE){
+                Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
+                loading.hide();
+
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }   else{
+                Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
+                loading.hide();
+            }
+        });
+
+    }
+
     public void login() {
 
         email = et_email.getText().toString();
@@ -96,24 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
             loading.show();
 
-            mAuth.signInWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
-                                loading.hide();
+            viewModel.login(FirebaseAuth.getInstance(),email,pass);
 
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                            else {
-                                Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
-                                loading.hide();
-                            }
-                        }
-                    });
         }
     }
 }

@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         //Time to launch the another activity
-        int TIME_OUT = 3000;
+        int TIME_OUT = 2000;
 
         new Handler().postDelayed(new Runnable() {
             @Override
