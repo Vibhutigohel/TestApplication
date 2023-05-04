@@ -1,6 +1,7 @@
 package com.example.testapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.testapplication.databinding.ActivityMainBinding;
 import com.example.testapplication.viewmodel.LoginViewmodel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,12 +26,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    TextView tv_sign_up, tv_sign_in;
-    EditText et_email, et_pass;
-    ImageView iv_pass;
     boolean isPassVisible = false;
 
+    ActivityMainBinding binding;
     String email, pass;
 
     ProgressDialog loading;
@@ -42,34 +41,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         viewModel = ViewModelProviders.of(this).get(LoginViewmodel.class);
-
-        tv_sign_in = findViewById(R.id.tv_sign_in);
-        tv_sign_up = findViewById(R.id.tv_sign_up);
-        et_email = findViewById(R.id.et_email);
-        et_pass = findViewById(R.id.et_pass);
-        iv_pass = findViewById(R.id.iv_pass);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         loading = Common.getDialog(this);
 
         listeners();
 
-        iv_pass.setOnClickListener(view -> {
+        binding.ivPass.setOnClickListener(view -> {
             if (!isPassVisible) {
-                et_pass.setTransformationMethod(new HideReturnsTransformationMethod());
-                iv_pass.setImageDrawable(getResources().getDrawable(R.drawable.pass_hide));
+                binding.etPass.setTransformationMethod(new HideReturnsTransformationMethod());
+                binding.ivPass.setImageDrawable(getResources().getDrawable(R.drawable.pass_hide));
                 isPassVisible = true;
             } else {
-                et_pass.setTransformationMethod(new PasswordTransformationMethod());
-                iv_pass.setImageDrawable(getResources().getDrawable(R.drawable.pass_see));
+                binding.etPass.setTransformationMethod(new PasswordTransformationMethod());
+                binding.ivPass.setImageDrawable(getResources().getDrawable(R.drawable.pass_see));
                 isPassVisible = false;
             }
-            et_pass.setSelection(et_pass.getText().length());
+            binding.etPass.setSelection(binding.etPass.getText().length());
         });
 
-        tv_sign_in.setOnClickListener(view -> {
+        binding.tvSignIn.setOnClickListener(view -> {
             login();
         });
 
-        tv_sign_up.setOnClickListener(new View.OnClickListener() {
+        binding.tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
@@ -98,23 +92,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void login() {
 
-        email = et_email.getText().toString();
-        pass = et_pass.getText().toString();
+        email = binding.etEmail.getText().toString();
+        pass = binding.etPass.getText().toString();
 
         if(TextUtils.isEmpty(email)){
-            et_email.setError("Please enter Email");
-            et_email.requestFocus();
+            binding.etEmail.setError("Please enter Email");
+            binding.etEmail.requestFocus();
         } else if (!Common.emailValidator(email)) {
-            et_email.setError("Please enter Valid Email");
-            et_email.requestFocus();
+            binding.etEmail.setError("Please enter Valid Email");
+            binding.etEmail.requestFocus();
         } else if (TextUtils.isEmpty(pass)) {
-            et_pass.setError("Please enter Password");
-            et_pass.requestFocus();
+            binding.etPass.setError("Please enter Password");
+            binding.etPass.requestFocus();
         } else if (pass.length() < 7) {
-            et_pass.setError("Please enter Password Upto 7 letters");
-            et_pass.requestFocus();
+            binding.etPass.setError("Please enter Password Upto 7 letters");
+            binding.etPass.requestFocus();
         }else {
-            tv_sign_in.requestFocus();
+            binding.tvSignIn.requestFocus();
 
             loading.show();
 

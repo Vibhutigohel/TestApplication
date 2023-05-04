@@ -15,6 +15,7 @@ public class HomeViewmodel extends AndroidViewModel {
 
     public MutableLiveData<String> sucessLiveData = new MutableLiveData<>();
 
+    public String user_name;
 
     public HomeViewmodel(Application application) {
         super(application);
@@ -25,7 +26,7 @@ public class HomeViewmodel extends AndroidViewModel {
 
         FirebaseFirestore.getInstance().collection("userDetails")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(documentSnapshot -> {
-            String user_name = documentSnapshot.getString("firstName");
+             user_name = documentSnapshot.getString("firstName");
 
             sucessLiveData.setValue(user_name);
         });

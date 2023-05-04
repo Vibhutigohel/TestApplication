@@ -1,11 +1,14 @@
 package com.example.testapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.testapplication.databinding.ActivityDetailBinding;
+import com.example.testapplication.databinding.ActivityMainBinding;
 import com.example.testapplication.viewmodel.DetailViewmodel;
 import com.example.testapplication.viewmodel.HomeViewmodel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +20,9 @@ public class DetailActivity extends AppCompatActivity {
 
     DetailViewmodel viewModel;
 
+    ActivityDetailBinding binding;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,11 +30,7 @@ public class DetailActivity extends AppCompatActivity {
 
         viewModel = ViewModelProviders.of(this).get(DetailViewmodel.class);
 
-        tv_name = findViewById(R.id.tv_name);
-        tv_gender = findViewById(R.id.tv_gender);
-        tv_email = findViewById(R.id.tv_email);
-        tv_mob_number = findViewById(R.id.tv_mob_number);
-        tv_dob = findViewById(R.id.tv_dob);
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_detail);
         viewModel.getUserDetail();
         listeners();
 
@@ -39,11 +41,12 @@ public class DetailActivity extends AppCompatActivity {
 
         viewModel.sucessLiveData.observe(this, user -> {
 
-            tv_name.setText(user.getFirstName() + " " + user.getLastName());
-            tv_gender.setText(user.getGender());
-            tv_email.setText(user.getEmail());
-            tv_mob_number.setText(user.getMobileNumber());
-            tv_dob.setText(user.getDob());
+            binding.tvFirstName.setText(user.getFirstName());
+            binding.tvLastName.setText(user.getLastName());
+            binding.tvGender.setText(user.getGender());
+            binding.tvEmail.setText(user.getEmail());
+            binding.tvMobNumber.setText(user.getMobileNumber());
+            binding.tvDob.setText(user.getDob());
         });
     }
 }
