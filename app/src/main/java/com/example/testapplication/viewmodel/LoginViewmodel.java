@@ -26,6 +26,7 @@ public class LoginViewmodel extends AndroidViewModel {
 
     }
 
+    //login method using firebase authentication
     public void login(FirebaseAuth auth, String email, String pwd){
 
         auth.signInWithEmailAndPassword(email, pwd)

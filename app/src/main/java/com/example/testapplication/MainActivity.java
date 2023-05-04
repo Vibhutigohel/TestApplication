@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //validation of inputs
     public void login() {
 
         email = binding.etEmail.getText().toString();

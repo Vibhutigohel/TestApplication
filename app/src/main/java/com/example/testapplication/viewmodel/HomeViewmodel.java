@@ -22,6 +22,7 @@ public class HomeViewmodel extends AndroidViewModel {
 
     }
 
+    //getting username from firestore database
     public void getUserName(){
 
         FirebaseFirestore.getInstance().collection("userDetails")

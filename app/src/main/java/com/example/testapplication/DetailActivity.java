@@ -34,7 +34,6 @@ public class DetailActivity extends AppCompatActivity {
         viewModel.getUserDetail();
         listeners();
 
-
     }
 
     private void listeners() {

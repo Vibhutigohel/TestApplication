@@ -28,6 +28,7 @@ public class SignUpViewmodel extends AndroidViewModel {
 
     }
 
+    //sign up using firebase authentication
     public void Signup(FirebaseAuth auth, String email, String pass) {
 
         auth.createUserWithEmailAndPassword(email, pass)
@@ -45,6 +46,7 @@ public class SignUpViewmodel extends AndroidViewModel {
                 });
     }
 
+    //on success of firebase sign up add data to firestore database
     public void addDataToFirestore(String firstName, String lastName, String gender, String email, String mobileNumber, String dob) {
 
         // creating a collection reference

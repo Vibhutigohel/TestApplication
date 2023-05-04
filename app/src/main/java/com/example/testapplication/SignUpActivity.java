@@ -108,6 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
         binding.etDate.setOnClickListener(view -> new DatePickerDialog(SignUpActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
         binding.tvSignIn.setOnClickListener(view -> onBackPressed());
+
         binding.tvSubmit.setOnClickListener(view -> {
             firstName = binding.etFirstName.getText().toString();
             lastName = binding.etLastName.getText().toString();
@@ -192,6 +193,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    //update date in date formate
     private void updateLabel() {
         String myFormat = "dd/MM/yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);

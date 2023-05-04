@@ -19,8 +19,8 @@ public class DetailViewmodel extends AndroidViewModel {
 
     }
 
+    //getting user detail from firestore database
     public void getUserDetail(){
-
 
         FirebaseFirestore.getInstance().collection("userDetails")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(documentSnapshot -> {
